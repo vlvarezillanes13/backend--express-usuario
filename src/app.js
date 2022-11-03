@@ -15,8 +15,10 @@ app.use( myconn(mysql, dbOptions, 'request'))
 //Lectura y parseo del body
 app.use( express.json() );
 
-//Rutas
+//Rutas usuario
 app.use( '/api/usuarios', require('./routes/usuario.routes') );
+//Ruta pokemon
+app.use( '/api/pokemones', require('./routes/pokemon.routes') );
 
 
 

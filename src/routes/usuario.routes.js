@@ -1,8 +1,7 @@
 const express = require('express');
-const { check } = require('express-validator');
-const { listarUsuarios, crearUsuario, eliminarUsuario, actualizarUsuario, listarUsuarioPorId } = require('../controllers/usuario.controller');
-const { validaCampos, validarId } = require('../middlewares/validar-campos');
 const routes = express.Router();
+const { listarUsuarios, crearUsuario, eliminarUsuario, actualizarUsuario, listarUsuarioPorId } = require('../controllers/usuario.controller');
+const { validaCampos, validarId, validarExistencia } = require('../middlewares/validar-usuario');
 
 routes.get('/', [], listarUsuarios)
 routes.get('/:id', [
@@ -10,7 +9,8 @@ routes.get('/:id', [
 ], listarUsuarioPorId)
 
 routes.post('/agregar', [
-    validaCampos
+    validaCampos,
+    validarExistencia
 ], crearUsuario)
 routes.put('/actualizar/:id', [
     validarId,

@@ -1,5 +1,4 @@
 const { request, response } = require("express");
-const { validationResult } = require("express-validator");
 
 const validaCampos = (req = request, resp = response, next) => {
   const body = req.body;
@@ -29,6 +28,8 @@ const validaCampos = (req = request, resp = response, next) => {
       errors: "Sin apellidos",
     });
   }
+
+  next();
 };
 
 const validarId = (req = request, resp = response, next) => {
@@ -52,7 +53,30 @@ const validarId = (req = request, resp = response, next) => {
   });
 };
 
+const validarExistencia = (req = request, resp = response, next) => {
+  console.log(req.body);
+  req.getConnection((err, conn) => {
+    if (err) return resp.send(err);
+    conn.query(
+      "SELECT * FROM usuario WHERE dni = ?",
+      [req.body.dni],
+      (err, data) => {
+        if (err) return resp.send(err);
+        if (data.length > 0) {
+          return resp.status(400).json({
+            ok: false,
+            errors: "USUARIO YA EXISTENTE!",
+          });
+        } else {
+          next();
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   validaCampos,
   validarId,
+  validarExistencia,
 };
